@@ -20,6 +20,7 @@ public:
 private slots:
 	void setLight(bool on);
 	void onSetColor();
+	void onShowRestartHint();
 
 private:
 	void setColor(const QColor& color);

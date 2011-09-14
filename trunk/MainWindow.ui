@@ -135,7 +135,7 @@
   <customwidget>
    <class>TeamRadarView</class>
    <extends>QGraphicsView</extends>
-   <header>TeamRadarView.h</header>
+   <header>../QtCreator/src/plugins/TeamRadar/TeamRadarView.h</header>
   </customwidget>
  </customwidgets>
  <resources>

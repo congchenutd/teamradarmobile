@@ -23,6 +23,7 @@ CONFIG += mobility
 MOBILITY += sensors
 
 QT += network sql
+INCLUDEPATH += ../QtCreator/src/plugins/TeamRadar/
 
 SOURCES += \
     Main.cpp \
@@ -42,7 +43,11 @@ SOURCES += \
     SpeedDlg.cpp \
 	../QtCreator/src/plugins/TeamRadar/Setting.cpp \
     ProjectsDlg.cpp \
-    WelcomeDlg.cpp
+    WelcomeDlg.cpp \
+    ../QtCreator/src/plugins/TeamRadar/ChatWindow.cpp \
+    ../QtCreator/src/plugins/TeamRadar/RecipientsDlg.cpp \
+    ../ImageColorBoolModel/ImageColorBoolModel.cpp \
+    ../ImageColorBoolModel/ImageColorBoolDelegate.cpp
 HEADERS += \
     MainWindow.h \
     SettingDlg.h \
@@ -62,7 +67,11 @@ HEADERS += \
     SpeedDlg.h \
 	../QtCreator/src/plugins/TeamRadar/Setting.h \
     ProjectsDlg.h \
-    WelcomeDlg.h
+    WelcomeDlg.h \
+    ../QtCreator/src/plugins/TeamRadar/ChatWindow.h \
+    ../QtCreator/src/plugins/TeamRadar/RecipientsDlg.h \
+    ../ImageColorBoolModel/ImageColorBoolModel.h \
+    ../ImageColorBoolModel/ImageColorBoolDelegate.h
 FORMS += \
     MainWindow.ui \
     SettingDlg.ui \
@@ -78,6 +87,12 @@ RESOURCES += \
     Resource.qrc
 
 OTHER_FILES +=
+
+
+
+
+
+
 
 
 

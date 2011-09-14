@@ -43,6 +43,13 @@ p, li { white-space: pre-wrap; }
     </widget>
    </item>
    <item>
+    <widget class="QPushButton" name="btConnect">
+     <property name="text">
+      <string>Connect</string>
+     </property>
+    </widget>
+   </item>
+   <item>
     <widget class="QPushButton" name="btOnline">
      <property name="text">
       <string>Online mode</string>

@@ -1,6 +1,7 @@
 #include "WelcomeDlg.h"
 #include "ui_WelcomeDlg.h"
 #include "SettingDlg.h"
+#include "Connection.h"
 #include <QApplication>
 
 WelcomeDlg::WelcomeDlg(QWidget *parent) :
@@ -9,10 +10,15 @@ WelcomeDlg::WelcomeDlg(QWidget *parent) :
     ui->setupUi(this);
 	showMaximized();
 
+	connect(ui->btConnect, SIGNAL(clicked()), this, SLOT(onConnect()));
 	connect(ui->btOnline,  SIGNAL(clicked()), this, SLOT(onOnline()));
 	connect(ui->btOffline, SIGNAL(clicked()), this, SLOT(onOffline()));
 	connect(ui->btSetting, SIGNAL(clicked()), this, SLOT(onSetting()));
-	connect(ui->btQuit,    SIGNAL(clicked()), qApp, SLOT(quit()));
+	connect(ui->btQuit,    SIGNAL(clicked()), this, SLOT(reject()));
+	connect(Connection::getInstance(), SIGNAL(connectionStatusChanged(bool)), this, SLOT(onConnected(bool)));
+
+	onConnected(false);
+	onConnect();
 }
 
 WelcomeDlg::~WelcomeDlg() {
@@ -35,4 +41,16 @@ void WelcomeDlg::onSetting()
 {
 	SettingDlg dlg(this);
 	dlg.exec();
+}
+
+void WelcomeDlg::onConnected(bool success)
+{
+	ui->btOnline ->setShown(success);
+	ui->btOffline->setShown(success);
+	ui->btConnect->setShown(!success);
+}
+
+void WelcomeDlg::onConnect() {
+	Connection::getInstance()->connectToHost(Setting::getInstance()->getServerAddress(),
+											 Setting::getInstance()->getServerPort());
 }

@@ -29,17 +29,16 @@ protected:
 	bool event(QEvent* event);
 
 private:
-	void connectToServer();
 	void switchFullScreen();
 	QIcon playIcon()  const;
 	QIcon pauseIcon() const;
 	void selectProject();
-	void welcome();
 
-private slots:
-	void onConnected(bool connected);
+public slots:
 	void onOnline();
 	void onOffline();
+
+private slots:
 	void onSettings();
 	void onAbout();
 	void onSpeed();

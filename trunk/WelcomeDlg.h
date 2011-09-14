@@ -20,6 +20,8 @@ private slots:
 	void onOnline();
 	void onOffline();
 	void onSetting();
+	void onConnected(bool success);
+	void onConnect();
 
 private:
 	Ui::WelcomeDlg *ui;

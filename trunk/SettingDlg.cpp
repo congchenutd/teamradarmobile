@@ -16,6 +16,9 @@ SettingDlg::SettingDlg(QWidget *parent) :
 	showMaximized();
 	setColor(Setting::getInstance()->getColor("DefaultDeveloperColor"));            // color
 
+	connect(ui->leAddress,  SIGNAL(textChanged(QString)), this, SLOT(onShowRestartHint()));
+	connect(ui->lePort,     SIGNAL(textChanged(QString)), this, SLOT(onShowRestartHint()));
+	connect(ui->leUserName, SIGNAL(textChanged(QString)), this, SLOT(onShowRestartHint()));
 	connect(ui->btColor, SIGNAL(clicked()), this, SLOT(onSetColor()));
 	connect(Connection::getInstance(), SIGNAL(connectionStatusChanged(bool)), this, SLOT(setLight(bool)));
 	setLight(Connection::getInstance()->isReadyForUse());
@@ -29,15 +32,10 @@ void SettingDlg::accept()
 {
 	// save settings
 	Setting* setting = Setting::getInstance();
-	QString address = ui->leAddress->text();
-	int     port    = ui->lePort->text().toInt();
 	setting->setUserName(ui->leUserName->text());
-	setting->setServerAddress(address);
-	setting->setServerPort(port);
+	setting->setServerAddress(ui->leAddress->text());
+	setting->setServerPort(ui->lePort->text().toInt());
 	setting->setColor("DefaultDeveloperColor", color);
-
-	// reconnect
-	Connection::getInstance()->connectToHost(address, port);
 
 	// register color
 	Sender::getInstance()->sendColorRegistration(color);
@@ -69,4 +67,8 @@ void SettingDlg::setColor(const QColor& clr)
 
 void SettingDlg::onSetColor() {
 	setColor(QColorDialog::getColor(color));
+}
+
+void SettingDlg::onShowRestartHint() {
+	ui->labelMessage->setText(tr("Restart to activate the changes"));
 }

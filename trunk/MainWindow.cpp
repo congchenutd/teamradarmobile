@@ -32,7 +32,6 @@ MainWindow::MainWindow(QWidget *parent)
 	PeerModel::createTables();
 	PeerManager::getInstance();
 
-	connect(Connection::getInstance(this), SIGNAL(connectionStatusChanged(bool)), this, SLOT(onConnected(bool)));
 	connect(ui->actionOnline,   SIGNAL(triggered()), this, SLOT(onOnline()));
 	connect(ui->actionOffline,  SIGNAL(triggered()), this, SLOT(onOffline()));
 	connect(ui->actionSettings, SIGNAL(triggered()), this, SLOT(onSettings()));
@@ -41,8 +40,6 @@ MainWindow::MainWindow(QWidget *parent)
 	connect(PeerManager::getInstance(), SIGNAL(userOnline(TeamRadarEvent)), this, SLOT(onEvent(TeamRadarEvent)));
 	connect(Receiver   ::getInstance(), SIGNAL(newEvent  (TeamRadarEvent)), this, SLOT(onEvent(TeamRadarEvent)));
 	connect(Receiver   ::getInstance(), SIGNAL(projectsResponse(QStringList)), this, SLOT(onProjects(QStringList)));
-
-	connectToServer();
 }
 
 MainWindow::~MainWindow() {
@@ -171,13 +168,6 @@ void MainWindow::onAbout() {
 			   "<p>CongChen@utdallas.edu</a></p>"));
 }
 
-void MainWindow::connectToServer()
-{
-	Setting* settings = Setting::getInstance();
-	Connection::getInstance()->connectToHost(
-				settings->getServerAddress(), settings->getServerPort());
-}
-
 QIcon MainWindow::playIcon() const {
 	return style()->standardIcon(QStyle::SP_MediaPlay);
 }
@@ -199,11 +189,6 @@ void MainWindow::onEvent(const TeamRadarEvent& event)
 	qDebug() << event.eventType;
 }
 
-void MainWindow::onConnected(bool connected) {
-	if(connected)
-		welcome();
-}
-
 void MainWindow::selectProject() {
 	Sender::getInstance()->sendProjectsRequest();
 }
@@ -215,18 +200,6 @@ void MainWindow::onProjects(const QStringList& projectList)
 	{
 		project = dlg.getProject();
 		Sender::getInstance()->sendJoinProject(project);
-	}
-}
-
-void MainWindow::welcome()
-{
-	WelcomeDlg dlg(this);
-	if(dlg.exec() == QDialog::Accepted)
-	{
-		if(dlg.isOnline())
-			onOnline();
-		else
-			onOffline();
 	}
 }
 
