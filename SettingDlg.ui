@@ -61,7 +61,7 @@
    <item>
     <widget class="QLabel" name="labelColor">
      <property name="sizePolicy">
-      <sizepolicy hsizetype="Ignored" vsizetype="Preferred">
+      <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
        <horstretch>0</horstretch>
        <verstretch>0</verstretch>
       </sizepolicy>
@@ -103,6 +103,9 @@
       </size>
      </property>
     </spacer>
+   </item>
+   <item>
+    <widget class="QLabel" name="labelMessage"/>
    </item>
    <item>
     <widget class="QDialogButtonBox" name="buttonBox">
