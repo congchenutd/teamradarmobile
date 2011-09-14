@@ -23,7 +23,7 @@ public:
     virtual ~MainWindow();
 
     // Note that this will only have an effect on Symbian and Fremantle.
-    void setOrientation(ScreenOrientation orientation);
+	void setOrientation(ScreenOrientation orientation);
 
 protected:
 	bool event(QEvent* event);
@@ -32,7 +32,7 @@ private:
 	void switchFullScreen();
 	QIcon playIcon()  const;
 	QIcon pauseIcon() const;
-	void selectProject();
+	void play(const TeamRadarEvent &event);
 
 public slots:
 	void onOnline();
@@ -44,6 +44,7 @@ private slots:
 	void onSpeed();
 	void onEvent(const TeamRadarEvent& event);
 	void onProjects(const QStringList& projectList);
+	void onSelectProject();
 
 private:
     Ui::MainWindow *ui;
