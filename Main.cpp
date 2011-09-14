@@ -1,10 +1,13 @@
 #include "MainWindow.h"
 #include "WelcomeDlg.h"
+#include "PeerManager.h"
 #include <QtGui/QApplication>
 
 int main(int argc, char *argv[])
 {
     QApplication app(argc, argv);
+
+	PeerManager::getInstance();
 
 	// font
 	QFont font = app.font();

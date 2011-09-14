@@ -14,6 +14,7 @@
 #include <QGestureEvent>
 #include <QTapGesture>
 #include <QMessageBox>
+#include <QGraphicsScene>
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent), ui(new Ui::MainWindow)
@@ -30,13 +31,18 @@ MainWindow::MainWindow(QWidget *parent)
 
 	PeerModel::openDB("TeamRadar.db");
 	PeerModel::createTables();
-	PeerManager::getInstance();
 
-	connect(ui->actionOnline,   SIGNAL(triggered()), this, SLOT(onOnline()));
-	connect(ui->actionOffline,  SIGNAL(triggered()), this, SLOT(onOffline()));
-	connect(ui->actionSettings, SIGNAL(triggered()), this, SLOT(onSettings()));
-	connect(ui->actionAbout,    SIGNAL(triggered()), this, SLOT(onAbout()));
-	connect(ui->btSpeed,        SIGNAL(clicked()),   this, SLOT(onSpeed()));
+	QGraphicsScene *scene = new QGraphicsScene(this);
+	scene->setItemIndexMethod(QGraphicsScene::NoIndex);
+	scene->setSceneRect(-300, -300, 600, 600);
+	ui->view->setScene(scene);
+
+	connect(ui->actionOnline,        SIGNAL(triggered()), this, SLOT(onOnline()));
+	connect(ui->actionOffline,       SIGNAL(triggered()), this, SLOT(onOffline()));
+	connect(ui->actionSelectProject, SIGNAL(triggered()), this, SLOT(onSelectProject()));
+	connect(ui->actionSettings,      SIGNAL(triggered()), this, SLOT(onSettings()));
+	connect(ui->actionAbout,         SIGNAL(triggered()), this, SLOT(onAbout()));
+	connect(ui->btSpeed,             SIGNAL(clicked()),   this, SLOT(onSpeed()));
 	connect(PeerManager::getInstance(), SIGNAL(userOnline(TeamRadarEvent)), this, SLOT(onEvent(TeamRadarEvent)));
 	connect(Receiver   ::getInstance(), SIGNAL(newEvent  (TeamRadarEvent)), this, SLOT(onEvent(TeamRadarEvent)));
 	connect(Receiver   ::getInstance(), SIGNAL(projectsResponse(QStringList)), this, SLOT(onProjects(QStringList)));
@@ -108,23 +114,6 @@ bool MainWindow::event(QEvent* event)
 			lastPosition = position;
 			return true;
 		}
-
-		if(QGesture* gesture = gestureEvent->gesture(Qt::TapGesture))
-		{
-			// play
-			static QPointF lastPosition;
-
-			QTapGesture* tapGesture = static_cast<QTapGesture*>(gesture);
-
-			// Don't know why one gesture produces TWO events :(
-			QPointF position = tapGesture->position();
-//			if(position != lastPosition)
-//				switchFullScreen();
-
-			lastPosition = position;
-			return true;
-		}
-
 	}
 	return QWidget::event(event);
 }
@@ -148,12 +137,12 @@ void MainWindow::switchFullScreen()
 
 void MainWindow::onOnline()
 {
-	selectProject();
+	onSelectProject();
 }
 
 void MainWindow::onOffline()
 {
-	selectProject();
+	onSelectProject();
 }
 
 void MainWindow::onSettings()
@@ -187,19 +176,49 @@ void MainWindow::onSpeed()
 void MainWindow::onEvent(const TeamRadarEvent& event)
 {
 	qDebug() << event.eventType;
+	play(event);
 }
 
-void MainWindow::selectProject() {
+void MainWindow::onSelectProject() {
 	Sender::getInstance()->sendProjectsRequest();
 }
 
 void MainWindow::onProjects(const QStringList& projectList)
 {
+	if(projectList.isEmpty())
+	{
+		QMessageBox::critical(this, tr("Error"), tr("There are no active projects!"));
+		close();
+		return;
+	}
+
 	ProjectsDlg dlg(projectList, this);
 	if(dlg.exec() == QDialog::Accepted)
 	{
 		project = dlg.getProject();
 		Sender::getInstance()->sendJoinProject(project);
+		PeerManager::getInstance()->refreshUserList();
+		ui->view->loadDir(project);
 	}
 }
 
+void MainWindow::play(const TeamRadarEvent& event)
+{
+//	if(online && PeerModel::isBlocked(event.userName))
+//		return;
+
+	// ignore itself
+	if(event.userName == Setting::getInstance()->getUserName())
+		return;
+
+	if(!ui->view->humanExists(event.userName))   // this overrides CONNECTED event
+		ui->view->addDeveloper(event.userName, PeerManager::getInstance()->getImage(event.userName));
+
+	if(event.eventType == "SAVE")
+		ui->view->moveDeveloperTo(event.userName, event.parameters);
+	else if(event.eventType == "MODE")
+		ui->view->setDeveloperMode(event.userName, event.parameters);
+	else if(event.eventType == "DISCONNECTED") {
+		ui->view->removeDeveloper(event.userName);
+	}
+}
