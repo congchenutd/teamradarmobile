@@ -196,6 +196,7 @@ void MainWindow::onProjects(const QStringList& projectList)
 	if(dlg.exec() == QDialog::Accepted)
 	{
 		project = dlg.getProject();
+		Setting::getInstance()->setRootPath(project);
 		Sender::getInstance()->sendJoinProject(project);
 		PeerManager::getInstance()->refreshUserList();
 		ui->view->loadDir(project);
