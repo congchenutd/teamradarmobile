@@ -20,7 +20,7 @@ int main(int argc, char *argv[])
 		return 1;
 
 	// main window
-    MainWindow mainWindow;
+	MainWindow mainWindow;
 	mainWindow.setOrientation(MainWindow::ScreenOrientationAuto);
 	mainWindow.showMaximized();
 
