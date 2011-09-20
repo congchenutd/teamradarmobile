@@ -9,7 +9,7 @@ namespace Ui {
 
 class SpeedDlg : public QDialog
 {
-    Q_OBJECT
+	Q_OBJECT
 
 public:
     explicit SpeedDlg(QWidget *parent = 0);

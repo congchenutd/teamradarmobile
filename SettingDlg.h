@@ -10,7 +10,7 @@ namespace Ui {
 
 class SettingDlg : public QDialog
 {
-    Q_OBJECT
+	Q_OBJECT
 
 public:
     explicit SettingDlg(QWidget *parent = 0);
