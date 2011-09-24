@@ -44,7 +44,6 @@ SOURCES += \
 	../QtCreator/src/plugins/TeamRadar/Setting.cpp \
     ProjectsDlg.cpp \
     WelcomeDlg.cpp \
-    ../QtCreator/src/plugins/TeamRadar/ChatWindow.cpp \
     ../QtCreator/src/plugins/TeamRadar/RecipientsDlg.cpp \
 	../ImageColorBoolModel/ImageColorBoolProxy.cpp \
     ../ImageColorBoolModel/ImageColorBoolDelegate.cpp
@@ -68,7 +67,6 @@ HEADERS += \
 	../QtCreator/src/plugins/TeamRadar/Setting.h \
     ProjectsDlg.h \
     WelcomeDlg.h \
-    ../QtCreator/src/plugins/TeamRadar/ChatWindow.h \
     ../QtCreator/src/plugins/TeamRadar/RecipientsDlg.h \
 	../ImageColorBoolModel/ImageColorBoolProxy.h \
     ../ImageColorBoolModel/ImageColorBoolDelegate.h
@@ -87,6 +85,8 @@ RESOURCES += \
     Resource.qrc
 
 OTHER_FILES +=
+
+
 
 
 
