@@ -36,6 +36,7 @@ MainWindow::MainWindow(QWidget *parent)
 	scene->setItemIndexMethod(QGraphicsScene::NoIndex);
 	scene->setSceneRect(-300, -300, 600, 600);
 	ui->view->setScene(scene);
+	PeerManager::getInstance()->setView(ui->view);
 
 	connect(ui->actionOnline,        SIGNAL(triggered()), this, SLOT(onOnline()));
 	connect(ui->actionOffline,       SIGNAL(triggered()), this, SLOT(onOffline()));
