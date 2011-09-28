@@ -1,6 +1,7 @@
 #include "MainWindow.h"
 #include "WelcomeDlg.h"
 #include "PeerManager.h"
+#include "Setting.h"
 #include <QtGui/QApplication>
 
 int main(int argc, char *argv[])
@@ -11,7 +12,7 @@ int main(int argc, char *argv[])
 
 	// font
 	QFont font = app.font();
-	font.setPointSize(10);
+	font.setPointSize(Setting::getInstance()->getFontSize());
 	app.setFont(font);
 
 	// user clicked quit
