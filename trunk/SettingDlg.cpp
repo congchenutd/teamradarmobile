@@ -16,14 +16,16 @@ SettingDlg::SettingDlg(QWidget *parent) :
 	ui->leAddress ->setText(setting->getServerAddress());
 	ui->lePort    ->setText(QString::number(Setting::getInstance()->getServerPort()));
 	setColor(setting->getColor("DefaultDeveloperColor"));            // color
-	onThreshold(setting->getThreshold() * 10);
+	onThreshold(1.0 / setting->getThreshold());
 	onFontSize(setting->getFontSize());
+	ui->cbLightTrail->setChecked(setting->showLightTrail());
+	ui->cbAfterImage->setChecked(setting->showAfterImage());
 	showMaximized();
 
 	connect(ui->leAddress,  SIGNAL(textChanged(QString)), this, SLOT(onShowRestartHint()));
 	connect(ui->lePort,     SIGNAL(textChanged(QString)), this, SLOT(onShowRestartHint()));
 	connect(ui->leUserName, SIGNAL(textChanged(QString)), this, SLOT(onShowRestartHint()));
-	connect(ui->btColor, SIGNAL(clicked()), this, SLOT(onSetColor()));
+	connect(ui->btColor,    SIGNAL(clicked()), this, SLOT(onSetColor()));
 	connect(ui->sliderSensitivity, SIGNAL(valueChanged(int)), this, SLOT(onThreshold(int)));
 	connect(ui->sliderFontSize,    SIGNAL(valueChanged(int)), this, SLOT(onFontSize(int)));
 	connect(Connection::getInstance(), SIGNAL(connectionStatusChanged(bool)), this, SLOT(setLight(bool)));
@@ -41,8 +43,10 @@ void SettingDlg::accept()
 	setting->setServerAddress(ui->leAddress->text());
 	setting->setServerPort(ui->lePort->text().toInt());
 	setting->setColor("DefaultDeveloperColor", color);
-	setting->setThreshold(ui->sliderSensitivity->value() / 10.0);
+	setting->setThreshold(1.0 / ui->sliderSensitivity->value());
 	setting->setFontSize(ui->sliderFontSize->value());
+	setting->setShowLightTrail(ui->cbLightTrail->isChecked());
+	setting->setShowAfterImage(ui->cbAfterImage->isChecked());
 
 	// register color
 	Sender::getInstance()->sendColorRegistration(color);
@@ -83,7 +87,7 @@ void SettingDlg::onShowRestartHint() {
 void SettingDlg::onThreshold(int value)
 {
 	ui->sliderSensitivity->setValue(value);
-	ui->labelSensitivity->setText(tr("Layout threshold = %1").arg(value / 10.0));
+	ui->labelSensitivity->setText(tr("Animation smoothness = %1").arg(value));
 }
 
 void SettingDlg::onFontSize(int value)
