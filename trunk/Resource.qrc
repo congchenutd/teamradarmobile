@@ -6,5 +6,12 @@
         <file>Images/UnChecked.png</file>
         <file>Images/Download.png</file>
         <file>Images/Cellphone.png</file>
+        <file>Images/Conflict.png</file>
+        <file>Images/Debug.png</file>
+        <file>Images/Design.png</file>
+        <file>Images/Edit.png</file>
+        <file>Images/Help.png</file>
+        <file>Images/Projects.png</file>
+        <file>Images/Welcome.png</file>
     </qresource>
 </RCC>

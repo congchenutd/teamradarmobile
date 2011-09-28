@@ -10,16 +10,22 @@ SettingDlg::SettingDlg(QWidget *parent) :
 {
     ui->setupUi(this);
 
-	ui->leUserName->setText(Setting::getInstance()->getUserName());
-	ui->leAddress ->setText(Setting::getInstance()->getServerAddress());
+	// load settings
+	setting = Setting::getInstance();
+	ui->leUserName->setText(setting->getUserName());
+	ui->leAddress ->setText(setting->getServerAddress());
 	ui->lePort    ->setText(QString::number(Setting::getInstance()->getServerPort()));
+	setColor(setting->getColor("DefaultDeveloperColor"));            // color
+	onThreshold(setting->getThreshold() * 10);
+	onFontSize(setting->getFontSize());
 	showMaximized();
-	setColor(Setting::getInstance()->getColor("DefaultDeveloperColor"));            // color
 
 	connect(ui->leAddress,  SIGNAL(textChanged(QString)), this, SLOT(onShowRestartHint()));
 	connect(ui->lePort,     SIGNAL(textChanged(QString)), this, SLOT(onShowRestartHint()));
 	connect(ui->leUserName, SIGNAL(textChanged(QString)), this, SLOT(onShowRestartHint()));
 	connect(ui->btColor, SIGNAL(clicked()), this, SLOT(onSetColor()));
+	connect(ui->sliderSensitivity, SIGNAL(valueChanged(int)), this, SLOT(onThreshold(int)));
+	connect(ui->sliderFontSize,    SIGNAL(valueChanged(int)), this, SLOT(onFontSize(int)));
 	connect(Connection::getInstance(), SIGNAL(connectionStatusChanged(bool)), this, SLOT(setLight(bool)));
 	setLight(Connection::getInstance()->isReadyForUse());
 }
@@ -31,11 +37,12 @@ SettingDlg::~SettingDlg() {
 void SettingDlg::accept()
 {
 	// save settings
-	Setting* setting = Setting::getInstance();
 	setting->setUserName(ui->leUserName->text());
 	setting->setServerAddress(ui->leAddress->text());
 	setting->setServerPort(ui->lePort->text().toInt());
 	setting->setColor("DefaultDeveloperColor", color);
+	setting->setThreshold(ui->sliderSensitivity->value() / 10.0);
+	setting->setFontSize(ui->sliderFontSize->value());
 
 	// register color
 	Sender::getInstance()->sendColorRegistration(color);
@@ -44,7 +51,7 @@ void SettingDlg::accept()
 	QImage image(":/Images/Cellphone.png");
 	QBuffer imageBuffer;
 	imageBuffer.open(QIODevice::WriteOnly);
-	image.save(&imageBuffer, "PNG");
+	image.save(&imageBuffer, "PNG");   // convert the image to QByteArray
 	Sender::getInstance()->sendPhotoRegistration("png", imageBuffer.buffer());
 	return QDialog::accept();
 }
@@ -71,4 +78,16 @@ void SettingDlg::onSetColor() {
 
 void SettingDlg::onShowRestartHint() {
 	ui->labelMessage->setText(tr("Restart to activate the changes"));
+}
+
+void SettingDlg::onThreshold(int value)
+{
+	ui->sliderSensitivity->setValue(value);
+	ui->labelSensitivity->setText(tr("Layout threshold = %1").arg(value / 10.0));
+}
+
+void SettingDlg::onFontSize(int value)
+{
+	ui->sliderFontSize->setValue(value);
+	ui->labelFontSize->setText(tr("Font size = %1").arg(value));
 }

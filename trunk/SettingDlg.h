@@ -8,6 +8,8 @@ namespace Ui {
     class SettingDlg;
 }
 
+class Setting;
+
 class SettingDlg : public QDialog
 {
 	Q_OBJECT
@@ -21,6 +23,8 @@ private slots:
 	void setLight(bool on);
 	void onSetColor();
 	void onShowRestartHint();
+	void onThreshold(int value);
+	void onFontSize(int value);
 
 private:
 	void setColor(const QColor& color);
@@ -28,6 +32,7 @@ private:
 private:
     Ui::SettingDlg *ui;
 	QColor color;
+	Setting* setting;
 };
 
 #endif // SETTINGDLG_H
