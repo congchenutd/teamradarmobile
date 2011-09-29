@@ -8,7 +8,7 @@
 #include "SpeedDlg.h"
 #include "TeamRadarEvent.h"
 #include "ProjectsDlg.h"
-#include "WelcomeDlg.h"
+#include "../QtCreator/src/plugins/TeamRadar/RequestEventsDlg.h"
 
 #include <QtCore/QCoreApplication>
 #include <QGestureEvent>
@@ -44,6 +44,7 @@ MainWindow::MainWindow(QWidget *parent)
 	connect(ui->actionSettings,      SIGNAL(triggered()), this, SLOT(onSettings()));
 	connect(ui->actionAbout,         SIGNAL(triggered()), this, SLOT(onAbout()));
 	connect(ui->btSpeed,             SIGNAL(clicked()),   this, SLOT(onSpeed()));
+	connect(ui->btDownload,          SIGNAL(clicked()),   this, SLOT(onDownload()));
 	connect(PeerManager::getInstance(), SIGNAL(userOnline(TeamRadarEvent)), this, SLOT(onEvent(TeamRadarEvent)));
 	connect(Receiver   ::getInstance(), SIGNAL(newEvent  (TeamRadarEvent)), this, SLOT(onEvent(TeamRadarEvent)));
 	connect(Receiver   ::getInstance(), SIGNAL(projectsResponse(QStringList)), this, SLOT(onProjects(QStringList)));
@@ -80,7 +81,7 @@ void MainWindow::setOrientation(ScreenOrientation orientation)
 	case ScreenOrientationAuto:
 		attribute = static_cast<Qt::WidgetAttribute>(130);
 		break;
-#else // QT_VERSION < 0x040702
+#else // QT_VERSION >= 0x040702
 	case ScreenOrientationLockPortrait:
 		attribute = Qt::WA_LockPortraitOrientation;
 		break;
@@ -91,7 +92,7 @@ void MainWindow::setOrientation(ScreenOrientation orientation)
 	case ScreenOrientationAuto:
 		attribute = Qt::WA_AutoOrientation;
 		break;
-#endif // QT_VERSION < 0x040702
+#endif
 	};
 	setAttribute(attribute, true);
 }
@@ -138,11 +139,15 @@ void MainWindow::switchFullScreen()
 
 void MainWindow::onOnline()
 {
+	showControls(false);
+	switchFullScreen();
 	onSelectProject();
 }
 
 void MainWindow::onOffline()
 {
+	showControls(true);
+	showMaximized();
 	onSelectProject();
 }
 
@@ -188,7 +193,7 @@ void MainWindow::onProjects(const QStringList& projectList)
 {
 	if(projectList.isEmpty())
 	{
-		QMessageBox::critical(this, tr("Error"), tr("There are no active projects!"));
+		QMessageBox::critical(this, tr("Error"), tr("No active projects!"));
 		close();
 		return;
 	}
@@ -223,4 +228,19 @@ void MainWindow::play(const TeamRadarEvent& event)
 	else if(event.eventType == "DISCONNECTED") {
 		ui->view->removeDeveloper(event.userName);
 	}
+}
+
+void MainWindow::showControls(bool show)
+{
+	ui->btPlayPause->setShown(show);
+	ui->slider     ->setShown(show);
+	ui->btSpeed    ->setShown(show);
+	ui->btDownload ->setShown(show);
+	ui->btEvents   ->setShown(show);
+}
+
+void MainWindow::onDownload()
+{
+	RequestEventsDlg dlg(this);
+	dlg.exec();
 }

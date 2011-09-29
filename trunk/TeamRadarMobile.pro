@@ -40,13 +40,13 @@ SOURCES += \
 	../QtCreator/src/plugins/TeamRadar/Label.cpp \
 	../QtCreator/src/plugins/TeamRadar/Engine.cpp \
 	../QtCreator/src/plugins/TeamRadar/Edge.cpp \
+	../QtCreator/src/plugins/TeamRadar/RequestEventsDlg.cpp \
     SpeedDlg.cpp \
 	../QtCreator/src/plugins/TeamRadar/Setting.cpp \
     ProjectsDlg.cpp \
     WelcomeDlg.cpp \
-    ../QtCreator/src/plugins/TeamRadar/RecipientsDlg.cpp \
 	../ImageColorBoolModel/ImageColorBoolProxy.cpp \
-    ../ImageColorBoolModel/ImageColorBoolDelegate.cpp
+	../ImageColorBoolModel/ImageColorBoolDelegate.cpp
 HEADERS += \
     MainWindow.h \
     SettingDlg.h \
@@ -63,11 +63,11 @@ HEADERS += \
 	../QtCreator/src/plugins/TeamRadar/Label.h \
 	../QtCreator/src/plugins/TeamRadar/Engine.h \
 	../QtCreator/src/plugins/TeamRadar/Edge.h \
+	../QtCreator/src/plugins/TeamRadar/RequestEventsDlg.h \
     SpeedDlg.h \
 	../QtCreator/src/plugins/TeamRadar/Setting.h \
     ProjectsDlg.h \
     WelcomeDlg.h \
-    ../QtCreator/src/plugins/TeamRadar/RecipientsDlg.h \
 	../ImageColorBoolModel/ImageColorBoolProxy.h \
     ../ImageColorBoolModel/ImageColorBoolDelegate.h
 FORMS += \
@@ -75,7 +75,8 @@ FORMS += \
     SettingDlg.ui \
     SpeedDlg.ui \
     ProjectsDlg.ui \
-    WelcomeDlg.ui
+	WelcomeDlg.ui \
+	../QtCreator/src/plugins/TeamRadar/RequestEventsDlg.ui
 
 # Please do not modify the following two lines. Required for deployment.
 include(deployment.pri)
@@ -85,6 +86,14 @@ RESOURCES += \
     Resource.qrc
 
 OTHER_FILES +=
+
+
+
+
+
+
+
+
 
 
 
