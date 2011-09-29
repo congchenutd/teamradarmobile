@@ -33,6 +33,7 @@ private:
 	QIcon playIcon()  const;
 	QIcon pauseIcon() const;
 	void play(const TeamRadarEvent &event);
+	void showControls(bool show);
 
 public slots:
 	void onOnline();
@@ -45,6 +46,7 @@ private slots:
 	void onEvent(const TeamRadarEvent& event);
 	void onProjects(const QStringList& projectList);
 	void onSelectProject();
+	void onDownload();
 
 private:
     Ui::MainWindow *ui;

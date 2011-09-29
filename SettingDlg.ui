@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Dialog</string>
+   <string>Setting</string>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout_5">
    <item>
@@ -156,7 +156,7 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>168</width>
+            <width>143</width>
             <height>162</height>
            </rect>
           </property>
