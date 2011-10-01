@@ -6,6 +6,7 @@ SpeedDlg::SpeedDlg(QWidget *parent) :
     ui(new Ui::SpeedDlg)
 {
     ui->setupUi(this);
+	showMaximized();
 	connect(ui->slider, SIGNAL(valueChanged(int)), this, SLOT(onValueChanged(int)));
 }
 

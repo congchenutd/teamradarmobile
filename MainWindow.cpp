@@ -8,6 +8,7 @@
 #include "SpeedDlg.h"
 #include "TeamRadarEvent.h"
 #include "ProjectsDlg.h"
+#include "PlaylistDlg.h"
 #include "../QtCreator/src/plugins/TeamRadar/RequestEventsDlg.h"
 
 #include <QtCore/QCoreApplication>
@@ -15,11 +16,23 @@
 #include <QTapGesture>
 #include <QMessageBox>
 #include <QGraphicsScene>
+#include <QStandardItemModel>
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent), ui(new Ui::MainWindow)
 {
 	speed = 1;
+	playing = false;
+	currentRow = -1;
+	fullScreen = false;
+	online = false;
+
+	model = new QStandardItemModel(this);
+	model->setColumnCount(4);
+	model->setHeaderData(DateTime,  Qt::Horizontal, tr("Time"));
+	model->setHeaderData(UserName,  Qt::Horizontal, tr("User"));
+	model->setHeaderData(EventType, Qt::Horizontal, tr("Event"));
+	model->setHeaderData(Parameter, Qt::Horizontal, tr("Parameters"));
 
     ui->setupUi(this);
 	grabGesture(Qt::PinchGesture);
@@ -27,7 +40,7 @@ MainWindow::MainWindow(QWidget *parent)
 	grabGesture(Qt::TapAndHoldGesture);
 
 	ui->btPlayPause->setIcon(playIcon());
-	ui->btEvents   ->setIcon(style()->standardIcon(QStyle::SP_FileDialogDetailedView));
+	ui->btPlaylist ->setIcon(style()->standardIcon(QStyle::SP_FileDialogDetailedView));
 
 	PeerModel::openDB("TeamRadar.db");
 	PeerModel::createTables();
@@ -45,9 +58,15 @@ MainWindow::MainWindow(QWidget *parent)
 	connect(ui->actionAbout,         SIGNAL(triggered()), this, SLOT(onAbout()));
 	connect(ui->btSpeed,             SIGNAL(clicked()),   this, SLOT(onSpeed()));
 	connect(ui->btDownload,          SIGNAL(clicked()),   this, SLOT(onDownload()));
+	connect(ui->btPlaylist,          SIGNAL(clicked()),   this, SLOT(onPlaylist()));
+	connect(ui->btPlayPause,         SIGNAL(clicked()),   this, SLOT(onPlayPause()));
+	connect(ui->slider,        SIGNAL(valueChanged(int)), this, SLOT(onRewind(int)));
 	connect(PeerManager::getInstance(), SIGNAL(userOnline(TeamRadarEvent)), this, SLOT(onEvent(TeamRadarEvent)));
-	connect(Receiver   ::getInstance(), SIGNAL(newEvent  (TeamRadarEvent)), this, SLOT(onEvent(TeamRadarEvent)));
-	connect(Receiver   ::getInstance(), SIGNAL(projectsResponse(QStringList)), this, SLOT(onProjects(QStringList)));
+
+	Receiver* receiver = Receiver::getInstance();
+	connect(receiver, SIGNAL(newEvent(TeamRadarEvent)),       this, SLOT(play(TeamRadarEvent)));
+	connect(receiver, SIGNAL(projectsResponse(QStringList)),  this, SLOT(onProjects(QStringList)));
+	connect(receiver, SIGNAL(eventsResponse(TeamRadarEvent)), this, SLOT(onEventDownloaded(TeamRadarEvent)));
 }
 
 MainWindow::~MainWindow() {
@@ -56,32 +75,20 @@ MainWindow::~MainWindow() {
 
 void MainWindow::setOrientation(ScreenOrientation orientation)
 {
-#if defined(Q_OS_SYMBIAN)
-	// If the version of Qt on the device is < 4.7.2, that attribute won't work
-	if (orientation != ScreenOrientationAuto) {
-		const QStringList v = QString::fromAscii(qVersion()).split(QLatin1Char('.'));
-		if (v.count() == 3 && (v.at(0).toInt() << 16 | v.at(1).toInt() << 8 | v.at(2).toInt()) < 0x040702) {
-			qWarning("Screen orientation locking only supported with Qt 4.7.2 and above");
-			return;
-		}
-	}
-#endif // Q_OS_SYMBIAN
+//#if defined(Q_OS_SYMBIAN)
+//	// If the version of Qt on the device is < 4.7.2, that attribute won't work
+//	if (orientation != ScreenOrientationAuto) {
+//		const QStringList v = QString::fromAscii(qVersion()).split(QLatin1Char('.'));
+//		if (v.count() == 3 && (v.at(0).toInt() << 16 | v.at(1).toInt() << 8 | v.at(2).toInt()) < 0x040702) {
+//			qWarning("Screen orientation locking only supported with Qt 4.7.2 and above");
+//			return;
+//		}
+//	}
+//#endif // Q_OS_SYMBIAN
 
 	Qt::WidgetAttribute attribute;
-	switch (orientation) {
-#if QT_VERSION < 0x040702
-	// Qt < 4.7.2 does not yet have the Qt::WA_*Orientation attributes
-	case ScreenOrientationLockPortrait:
-		attribute = static_cast<Qt::WidgetAttribute>(128);
-		break;
-	case ScreenOrientationLockLandscape:
-		attribute = static_cast<Qt::WidgetAttribute>(129);
-		break;
-	default:
-	case ScreenOrientationAuto:
-		attribute = static_cast<Qt::WidgetAttribute>(130);
-		break;
-#else // QT_VERSION >= 0x040702
+	switch(orientation)
+	{
 	case ScreenOrientationLockPortrait:
 		attribute = Qt::WA_LockPortraitOrientation;
 		break;
@@ -92,8 +99,7 @@ void MainWindow::setOrientation(ScreenOrientation orientation)
 	case ScreenOrientationAuto:
 		attribute = Qt::WA_AutoOrientation;
 		break;
-#endif
-	};
+	}
 	setAttribute(attribute, true);
 }
 
@@ -106,12 +112,10 @@ bool MainWindow::event(QEvent* event)
 		{
 			static QPointF lastPosition;
 
-			QTapAndHoldGesture* tapAndHoldGesture = static_cast<QTapAndHoldGesture*>(gesture);
-
 			// Don't know why one gesture produces TWO events :(
-			QPointF position = tapAndHoldGesture->position();
-			if(position != lastPosition)
-				switchFullScreen();
+			QPointF position = static_cast<QTapAndHoldGesture*>(gesture)->position();
+			if(position != lastPosition)   // ignore the 2nd event on the same position
+				toggleFullScreen();
 
 			lastPosition = position;
 			return true;
@@ -120,34 +124,23 @@ bool MainWindow::event(QEvent* event)
 	return QWidget::event(event);
 }
 
-void MainWindow::switchFullScreen()
+void MainWindow::toggleFullScreen()
 {
-	static bool fullScreen = false;
-	if(fullScreen)
-	{
-		showMaximized();
-		ui->fmControls->show();
-		fullScreen = false;
-	}
-	else
-	{
-		showFullScreen();
-		ui->fmControls->hide();
-		fullScreen = true;
-	}
+	if(fullScreen)	showMaximized();
+	else			showFullScreen();
 }
 
 void MainWindow::onOnline()
 {
+	online = true;
 	showControls(false);
-	switchFullScreen();
 	onSelectProject();
 }
 
 void MainWindow::onOffline()
 {
+	online = false;
 	showControls(true);
-	showMaximized();
 	onSelectProject();
 }
 
@@ -177,12 +170,6 @@ void MainWindow::onSpeed()
 	dlg.setSpeed(speed);
 	if(dlg.exec() == QDialog::Accepted)
 		speed = dlg.getSpeed();
-}
-
-void MainWindow::onEvent(const TeamRadarEvent& event)
-{
-	qDebug() << event.eventType;
-	play(event);
 }
 
 void MainWindow::onSelectProject() {
@@ -230,17 +217,115 @@ void MainWindow::play(const TeamRadarEvent& event)
 	}
 }
 
+void MainWindow::play()
+{
+	if(!playing)
+		return;
+
+	play(++currentRow);
+
+	// ready for the next
+	int nextRow = currentRow + 1;
+	if(nextRow < model->rowCount())
+	{
+		QDateTime thisTime = model->data(model->index(currentRow, DateTime)).toDateTime();
+		QDateTime nextTime = model->data(model->index(nextRow,    DateTime)).toDateTime();
+		int duration = thisTime.secsTo(nextTime);
+		QTimer::singleShot(duration * 1000 / speed, this, SLOT(play()));
+	}
+	else {
+		stop();
+	}
+}
+
+void MainWindow::play(int row)
+{
+	currentRow = row;
+	ui->slider->setValue(row);
+	play(TeamRadarEvent(model->data(model->index(row, UserName)) .toString(),
+						model->data(model->index(row, EventType)).toString(),
+						model->data(model->index(row, Parameter)).toString()));
+}
+
 void MainWindow::showControls(bool show)
 {
 	ui->btPlayPause->setShown(show);
 	ui->slider     ->setShown(show);
 	ui->btSpeed    ->setShown(show);
 	ui->btDownload ->setShown(show);
-	ui->btEvents   ->setShown(show);
+	ui->btPlaylist ->setShown(show);
 }
 
 void MainWindow::onDownload()
 {
 	RequestEventsDlg dlg(this);
+	if(dlg.exec() == QDialog::Accepted)
+		Sender::getInstance()->sendEventRequest(dlg.getUserList(),
+												dlg.getEventList(),
+												dlg.getStartTime(),
+												dlg.getEndTime(),
+												dlg.getPhases(),
+												dlg.getFuzziness());
+}
+
+void MainWindow::onEventDownloaded(const TeamRadarEvent& event)
+{
+	int lastRow = model->rowCount();
+	model->insertRow(lastRow);
+	model->setData(model->index(lastRow, 0), event.time.toString(Setting::dateTimeFormat));
+	model->setData(model->index(lastRow, 1), event.userName);
+	model->setData(model->index(lastRow, 2), event.eventType);
+	model->setData(model->index(lastRow, 3), event.parameters);
+
+	ui->slider->setMaximum(model->rowCount() - 1);
+	model->sort(DateTime);
+}
+
+void MainWindow::onPlaylist()
+{
+	PlaylistDlg dlg(model, this);
 	dlg.exec();
+}
+
+void MainWindow::onPlayPause()
+{
+	if(playing)   // pause
+	{
+		ui->btPlayPause->setIcon(playIcon());
+		playing = false;
+	}
+	else          // start
+	{
+		ui->btPlayPause->setIcon(pauseIcon());
+		playing = true;
+		play();
+		showFullScreen();
+	}
+}
+
+void MainWindow::onRewind(int row) {
+	currentRow = row;
+}
+
+void MainWindow::showFullScreen()
+{
+	QMainWindow::showFullScreen();
+	ui->fmControls->hide();
+	fullScreen = true;
+}
+
+void MainWindow::showMaximized()
+{
+	QMainWindow::showMaximized();
+	ui->fmControls->show();
+	fullScreen = false;
+}
+
+void MainWindow::stop()
+{
+	currentRow = -1;
+	playing = false;
+	ui->btPlayPause->setIcon(playIcon());
+	ui->slider->setValue(0);
+	showMaximized();
 }

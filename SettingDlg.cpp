@@ -8,7 +8,7 @@
 SettingDlg::SettingDlg(QWidget *parent) :
 	QDialog(parent), ui(new Ui::SettingDlg)
 {
-    ui->setupUi(this);
+	ui->setupUi(this);
 
 	// load settings
 	setting = Setting::getInstance();
@@ -16,7 +16,7 @@ SettingDlg::SettingDlg(QWidget *parent) :
 	ui->leAddress ->setText(setting->getServerAddress());
 	ui->lePort    ->setText(QString::number(Setting::getInstance()->getServerPort()));
 	setColor(setting->getColor("DefaultDeveloperColor"));            // color
-	onThreshold(1.0 / setting->getThreshold());
+	onSubtlety(1.0 / setting->getThreshold());
 	onFontSize(setting->getFontSize());
 	ui->cbLightTrail->setChecked(setting->showLightTrail());
 	ui->cbAfterImage->setChecked(setting->showAfterImage());
@@ -26,8 +26,8 @@ SettingDlg::SettingDlg(QWidget *parent) :
 	connect(ui->lePort,     SIGNAL(textChanged(QString)), this, SLOT(onShowRestartHint()));
 	connect(ui->leUserName, SIGNAL(textChanged(QString)), this, SLOT(onShowRestartHint()));
 	connect(ui->btColor,    SIGNAL(clicked()), this, SLOT(onSetColor()));
-	connect(ui->sliderSensitivity, SIGNAL(valueChanged(int)), this, SLOT(onThreshold(int)));
-	connect(ui->sliderFontSize,    SIGNAL(valueChanged(int)), this, SLOT(onFontSize(int)));
+	connect(ui->sliderSubtlety, SIGNAL(valueChanged(int)), this, SLOT(onSubtlety(int)));
+	connect(ui->sliderFontSize, SIGNAL(valueChanged(int)), this, SLOT(onFontSize(int)));
 	connect(Connection::getInstance(), SIGNAL(connectionStatusChanged(bool)), this, SLOT(setLight(bool)));
 	setLight(Connection::getInstance()->isReadyForUse());
 }
@@ -43,7 +43,7 @@ void SettingDlg::accept()
 	setting->setServerAddress(ui->leAddress->text());
 	setting->setServerPort(ui->lePort->text().toInt());
 	setting->setColor("DefaultDeveloperColor", color);
-	setting->setThreshold(1.0 / ui->sliderSensitivity->value());
+	setting->setEngineSubtlety(ui->sliderSubtlety->value());
 	setting->setFontSize(ui->sliderFontSize->value());
 	setting->setShowLightTrail(ui->cbLightTrail->isChecked());
 	setting->setShowAfterImage(ui->cbAfterImage->isChecked());
@@ -84,10 +84,10 @@ void SettingDlg::onShowRestartHint() {
 	ui->labelMessage->setText(tr("Restart to activate the changes"));
 }
 
-void SettingDlg::onThreshold(int value)
+void SettingDlg::onSubtlety(int value)
 {
-	ui->sliderSensitivity->setValue(value);
-	ui->labelSensitivity->setText(tr("Animation smoothness = %1").arg(value));
+	ui->sliderSubtlety->setValue(value);
+	ui->labelSubtlety->setText(tr("Animation subtlety = %1").arg(value));
 }
 
 void SettingDlg::onFontSize(int value)
