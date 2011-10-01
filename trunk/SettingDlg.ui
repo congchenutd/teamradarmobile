@@ -156,20 +156,20 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>143</width>
+            <width>168</width>
             <height>162</height>
            </rect>
           </property>
           <layout class="QVBoxLayout" name="verticalLayout_2">
            <item>
-            <widget class="QLabel" name="labelSensitivity">
+            <widget class="QLabel" name="labelSubtlety">
              <property name="text">
-              <string>Animation smoothness</string>
+              <string>Animation subtlety</string>
              </property>
             </widget>
            </item>
            <item>
-            <widget class="QSlider" name="sliderSensitivity">
+            <widget class="QSlider" name="sliderSubtlety">
              <property name="minimum">
               <number>1</number>
              </property>

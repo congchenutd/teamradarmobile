@@ -46,7 +46,8 @@ SOURCES += \
     ProjectsDlg.cpp \
     WelcomeDlg.cpp \
 	../ImageColorBoolModel/ImageColorBoolProxy.cpp \
-	../ImageColorBoolModel/ImageColorBoolDelegate.cpp
+	../ImageColorBoolModel/ImageColorBoolDelegate.cpp \
+    PlaylistDlg.cpp
 HEADERS += \
     MainWindow.h \
     SettingDlg.h \
@@ -69,14 +70,16 @@ HEADERS += \
     ProjectsDlg.h \
     WelcomeDlg.h \
 	../ImageColorBoolModel/ImageColorBoolProxy.h \
-    ../ImageColorBoolModel/ImageColorBoolDelegate.h
+    ../ImageColorBoolModel/ImageColorBoolDelegate.h \
+    PlaylistDlg.h
 FORMS += \
     MainWindow.ui \
     SettingDlg.ui \
     SpeedDlg.ui \
     ProjectsDlg.ui \
 	WelcomeDlg.ui \
-	../QtCreator/src/plugins/TeamRadar/RequestEventsDlg.ui
+	../QtCreator/src/plugins/TeamRadar/RequestEventsDlg.ui \
+    PlaylistDlg.ui
 
 # Please do not modify the following two lines. Required for deployment.
 include(deployment.pri)
@@ -86,6 +89,9 @@ RESOURCES += \
     Resource.qrc
 
 OTHER_FILES +=
+
+
+
 
 
 

@@ -9,6 +9,7 @@ namespace Ui {
 	class MainWindow;
 }
 
+class QStandardItemModel;
 class MainWindow : public QMainWindow
 {
     Q_OBJECT
@@ -16,42 +17,57 @@ public:
     enum ScreenOrientation {
         ScreenOrientationLockPortrait,
         ScreenOrientationLockLandscape,
-        ScreenOrientationAuto
+		ScreenOrientationAuto
     };
 
     explicit MainWindow(QWidget *parent = 0);
-    virtual ~MainWindow();
-
-    // Note that this will only have an effect on Symbian and Fremantle.
+	~MainWindow();
 	void setOrientation(ScreenOrientation orientation);
+	virtual void showFullScreen();
+	virtual void showMaximized();
 
 protected:
 	bool event(QEvent* event);
 
-private:
-	void switchFullScreen();
-	QIcon playIcon()  const;
-	QIcon pauseIcon() const;
-	void play(const TeamRadarEvent &event);
-	void showControls(bool show);
-
 public slots:
 	void onOnline();
 	void onOffline();
+	void onEventDownloaded(const TeamRadarEvent &event);
 
 private slots:
 	void onSettings();
 	void onAbout();
 	void onSpeed();
-	void onEvent(const TeamRadarEvent& event);
 	void onProjects(const QStringList& projectList);
 	void onSelectProject();
 	void onDownload();
+	void onPlaylist();
+	void onPlayPause();
+	void onRewind(int row);
+	void play();
+	void play(const TeamRadarEvent &event);
+
+private:
+	QIcon playIcon()  const;
+	QIcon pauseIcon() const;
+	void toggleFullScreen();
+	void play(int row);
+	void stop();
+	void showControls(bool show);
+
+public:
+	enum {DateTime, UserName, EventType, Parameter};
 
 private:
     Ui::MainWindow *ui;
+
+	QStandardItemModel* model;
 	QString project;
 	int speed;
+	bool playing;
+	int currentRow;
+	bool fullScreen;
+	bool online;
 };
 
 #endif // MAINWINDOW_H

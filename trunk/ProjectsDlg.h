@@ -6,7 +6,7 @@
 #include <QStandardItemModel>
 
 namespace Ui {
-    class ProjectsDlg;
+	class ProjectsDlg;
 }
 
 class ProjectsDlg : public QDialog

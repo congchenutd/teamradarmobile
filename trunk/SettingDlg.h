@@ -23,7 +23,7 @@ private slots:
 	void setLight(bool on);
 	void onSetColor();
 	void onShowRestartHint();
-	void onThreshold(int value);
+	void onSubtlety(int value);
 	void onFontSize(int value);
 
 private:

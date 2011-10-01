@@ -55,6 +55,12 @@
        </item>
        <item>
         <widget class="QPushButton" name="btSpeed">
+         <property name="maximumSize">
+          <size>
+           <width>20</width>
+           <height>16777215</height>
+          </size>
+         </property>
          <property name="text">
           <string>X</string>
          </property>
@@ -72,7 +78,7 @@
         </widget>
        </item>
        <item>
-        <widget class="QPushButton" name="btEvents">
+        <widget class="QPushButton" name="btPlaylist">
          <property name="text">
           <string/>
          </property>
