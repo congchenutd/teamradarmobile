@@ -8,6 +8,8 @@ int main(int argc, char *argv[])
 {
 	QApplication app(argc, argv);
 
+	PeerModel::openDB("TeamRadar.db");
+	PeerModel::createTables();
 	PeerManager::getInstance();
 
 	// font

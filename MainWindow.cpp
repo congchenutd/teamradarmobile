@@ -42,9 +42,6 @@ MainWindow::MainWindow(QWidget *parent)
 	ui->btPlayPause->setIcon(playIcon());
 	ui->btPlaylist ->setIcon(style()->standardIcon(QStyle::SP_FileDialogDetailedView));
 
-	PeerModel::openDB("TeamRadar.db");
-	PeerModel::createTables();
-
 	QGraphicsScene *scene = new QGraphicsScene(this);
 	scene->setItemIndexMethod(QGraphicsScene::NoIndex);
 	scene->setSceneRect(-300, -300, 600, 600);
