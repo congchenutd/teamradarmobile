@@ -3,6 +3,7 @@
 #include "PeerManager.h"
 #include "Setting.h"
 #include <QtGui/QApplication>
+//#include "Defines.h"
 
 int main(int argc, char *argv[])
 {

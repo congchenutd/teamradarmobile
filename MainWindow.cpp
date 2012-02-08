@@ -9,7 +9,7 @@
 #include "TeamRadarEvent.h"
 #include "ProjectsDlg.h"
 #include "PlaylistDlg.h"
-#include "../QtCreator/src/plugins/TeamRadar/RequestEventsDlg.h"
+#include "../TeamRadar/RequestEventsDlg.h"
 
 #include <QtCore/QCoreApplication>
 #include <QGestureEvent>
