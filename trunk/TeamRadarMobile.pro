@@ -23,26 +23,26 @@ CONFIG += mobility
 MOBILITY += sensors
 
 QT += network sql
-INCLUDEPATH += ../QtCreator/src/plugins/TeamRadar/
+INCLUDEPATH += ../TeamRadar/
 
 SOURCES += \
     Main.cpp \
     MainWindow.cpp \
     SettingDlg.cpp \
-	../QtCreator/src/plugins/TeamRadar/Connection.cpp \
-	../QtCreator/src/plugins/TeamRadar/PeerModel.cpp \
-	../QtCreator/src/plugins/TeamRadar/PeerManager.cpp \
-	../QtCreator/src/plugins/TeamRadar/Utility.cpp \
-	../QtCreator/src/plugins/TeamRadar/TeamRadarView.cpp \
-	../QtCreator/src/plugins/TeamRadar/Node.cpp \
-	../QtCreator/src/plugins/TeamRadar/ModeTag.cpp \
-	../QtCreator/src/plugins/TeamRadar/LightTrail.cpp \
-	../QtCreator/src/plugins/TeamRadar/Label.cpp \
-	../QtCreator/src/plugins/TeamRadar/Engine.cpp \
-	../QtCreator/src/plugins/TeamRadar/Edge.cpp \
-	../QtCreator/src/plugins/TeamRadar/RequestEventsDlg.cpp \
+	../TeamRadar/Connection.cpp \
+	../TeamRadar/PeerModel.cpp \
+	../TeamRadar/PeerManager.cpp \
+	../TeamRadar/Utility.cpp \
+	../TeamRadar/TeamRadarView.cpp \
+	../TeamRadar/Node.cpp \
+	../TeamRadar/ModeTag.cpp \
+	../TeamRadar/LightTrail.cpp \
+	../TeamRadar/Label.cpp \
+	../TeamRadar/Engine.cpp \
+	../TeamRadar/Edge.cpp \
+	../TeamRadar/RequestEventsDlg.cpp \
     SpeedDlg.cpp \
-	../QtCreator/src/plugins/TeamRadar/Setting.cpp \
+	../TeamRadar/Setting.cpp \
     ProjectsDlg.cpp \
     WelcomeDlg.cpp \
 	../ImageColorBoolModel/ImageColorBoolProxy.cpp \
@@ -51,34 +51,34 @@ SOURCES += \
 HEADERS += \
     MainWindow.h \
     SettingDlg.h \
-	../QtCreator/src/plugins/TeamRadar/Connection.h \
-	../QtCreator/src/plugins/TeamRadar/TeamRadarEvent.h \
-	../QtCreator/src/plugins/TeamRadar/MySetting.h \
-	../QtCreator/src/plugins/TeamRadar/PeerModel.h \
-	../QtCreator/src/plugins/TeamRadar/PeerManager.h \
-	../QtCreator/src/plugins/TeamRadar/Utility.h \
-	../QtCreator/src/plugins/TeamRadar/TeamRadarView.h \
-	../QtCreator/src/plugins/TeamRadar/Node.h \
-	../QtCreator/src/plugins/TeamRadar/ModeTag.h \
-	../QtCreator/src/plugins/TeamRadar/LightTrail.h \
-	../QtCreator/src/plugins/TeamRadar/Label.h \
-	../QtCreator/src/plugins/TeamRadar/Engine.h \
-	../QtCreator/src/plugins/TeamRadar/Edge.h \
-	../QtCreator/src/plugins/TeamRadar/RequestEventsDlg.h \
+	../TeamRadar/Connection.h \
+	../TeamRadar/TeamRadarEvent.h \
+	../TeamRadar/MySetting.h \
+	../TeamRadar/PeerModel.h \
+	../TeamRadar/PeerManager.h \
+	../TeamRadar/Utility.h \
+	../TeamRadar/TeamRadarView.h \
+	../TeamRadar/Node.h \
+	../TeamRadar/ModeTag.h \
+	../TeamRadar/LightTrail.h \
+	../TeamRadar/Label.h \
+	../TeamRadar/Engine.h \
+	../TeamRadar/Edge.h \
+	../TeamRadar/RequestEventsDlg.h \
     SpeedDlg.h \
-	../QtCreator/src/plugins/TeamRadar/Setting.h \
+	../TeamRadar/Setting.h \
     ProjectsDlg.h \
     WelcomeDlg.h \
 	../ImageColorBoolModel/ImageColorBoolProxy.h \
     ../ImageColorBoolModel/ImageColorBoolDelegate.h \
-    PlaylistDlg.h
+	PlaylistDlg.h
 FORMS += \
     MainWindow.ui \
     SettingDlg.ui \
     SpeedDlg.ui \
     ProjectsDlg.ui \
 	WelcomeDlg.ui \
-	../QtCreator/src/plugins/TeamRadar/RequestEventsDlg.ui \
+	../TeamRadar/RequestEventsDlg.ui \
     PlaylistDlg.ui
 
 # Please do not modify the following two lines. Required for deployment.
