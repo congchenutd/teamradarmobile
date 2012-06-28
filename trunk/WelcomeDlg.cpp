@@ -4,6 +4,8 @@
 #include "Connection.h"
 #include <QApplication>
 
+namespace TeamRadar {
+
 WelcomeDlg::WelcomeDlg(QWidget *parent) :
 	QDialog(parent), ui(new Ui::WelcomeDlg)
 {
@@ -53,4 +55,6 @@ void WelcomeDlg::onConnected(bool success)
 void WelcomeDlg::onConnect() {
 	Connection::getInstance()->connectToHost(Setting::getInstance()->getServerAddress(),
 											 Setting::getInstance()->getServerPort());
+}
+
 }

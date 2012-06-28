@@ -9,7 +9,7 @@
 #include "TeamRadarEvent.h"
 #include "ProjectsDlg.h"
 #include "PlaylistDlg.h"
-#include "../TeamRadar/RequestEventsDlg.h"
+#include "RequestEventsDlg.h"
 
 #include <QtCore/QCoreApplication>
 #include <QGestureEvent>
@@ -18,8 +18,10 @@
 #include <QGraphicsScene>
 #include <QStandardItemModel>
 
+namespace TeamRadar {
+
 MainWindow::MainWindow(QWidget *parent)
-    : QMainWindow(parent), ui(new Ui::MainWindow)
+	: QMainWindow(parent), ui(new Ui::MainWindow)
 {
 	speed = 1;
 	playing = false;
@@ -34,7 +36,7 @@ MainWindow::MainWindow(QWidget *parent)
 	model->setHeaderData(EventType, Qt::Horizontal, tr("Event"));
 	model->setHeaderData(Parameter, Qt::Horizontal, tr("Parameters"));
 
-    ui->setupUi(this);
+	ui->setupUi(this);
 	grabGesture(Qt::PinchGesture);
 	grabGesture(Qt::TapGesture);
 	grabGesture(Qt::TapAndHoldGesture);
@@ -61,28 +63,17 @@ MainWindow::MainWindow(QWidget *parent)
 	connect(PeerManager::getInstance(), SIGNAL(userOnline(TeamRadarEvent)), this, SLOT(onEvent(TeamRadarEvent)));
 
 	Receiver* receiver = Receiver::getInstance();
-	connect(receiver, SIGNAL(newEvent(TeamRadarEvent)),       this, SLOT(play(TeamRadarEvent)));
-	connect(receiver, SIGNAL(projectsResponse(QStringList)),  this, SLOT(onProjects(QStringList)));
-	connect(receiver, SIGNAL(eventsResponse(TeamRadarEvent)), this, SLOT(onEventDownloaded(TeamRadarEvent)));
+	connect(receiver, SIGNAL(newEvent(TeamRadarEvent)),    this, SLOT(play(TeamRadarEvent)));
+	connect(receiver, SIGNAL(projectsReply(QStringList)),  this, SLOT(onProjects(QStringList)));
+	connect(receiver, SIGNAL(eventsReply(TeamRadarEvent)), this, SLOT(onEventDownloaded(TeamRadarEvent)));
 }
 
 MainWindow::~MainWindow() {
-    delete ui;
+	delete ui;
 }
 
 void MainWindow::setOrientation(ScreenOrientation orientation)
 {
-//#if defined(Q_OS_SYMBIAN)
-//	// If the version of Qt on the device is < 4.7.2, that attribute won't work
-//	if (orientation != ScreenOrientationAuto) {
-//		const QStringList v = QString::fromAscii(qVersion()).split(QLatin1Char('.'));
-//		if (v.count() == 3 && (v.at(0).toInt() << 16 | v.at(1).toInt() << 8 | v.at(2).toInt()) < 0x040702) {
-//			qWarning("Screen orientation locking only supported with Qt 4.7.2 and above");
-//			return;
-//		}
-//	}
-//#endif // Q_OS_SYMBIAN
-
 	Qt::WidgetAttribute attribute;
 	switch(orientation)
 	{
@@ -188,7 +179,7 @@ void MainWindow::onProjects(const QStringList& projectList)
 		project = dlg.getProject();
 		Setting::getInstance()->setRootPath(project);
 		Sender::getInstance()->sendJoinProject(project);
-		PeerManager::getInstance()->refreshUserList();
+		Sender::getInstance()->sendTeamMemberRequest();
 		ui->view->loadDir(project);
 	}
 }
@@ -325,4 +316,6 @@ void MainWindow::stop()
 	ui->btPlayPause->setIcon(playIcon());
 	ui->slider->setValue(0);
 	showMaximized();
+}
+
 }

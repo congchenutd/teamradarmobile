@@ -5,6 +5,8 @@
 #include <QColorDialog>
 #include <QBuffer>
 
+namespace TeamRadar {
+
 SettingDlg::SettingDlg(QWidget *parent) :
 	QDialog(parent), ui(new Ui::SettingDlg)
 {
@@ -94,4 +96,6 @@ void SettingDlg::onFontSize(int value)
 {
 	ui->sliderFontSize->setValue(value);
 	ui->labelFontSize->setText(tr("Font size = %1").arg(value));
+}
+
 }

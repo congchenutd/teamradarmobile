@@ -22,7 +22,7 @@
      <number>5</number>
     </property>
     <item>
-     <widget class="TeamRadarView" name="view"/>
+     <widget class="TeamRadar::TeamRadarView" name="view"/>
     </item>
     <item>
      <widget class="QFrame" name="fmControls">
@@ -95,7 +95,7 @@
      <x>0</x>
      <y>0</y>
      <width>370</width>
-     <height>25</height>
+     <height>26</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuMode">
@@ -145,9 +145,9 @@
  <layoutdefault spacing="6" margin="11"/>
  <customwidgets>
   <customwidget>
-   <class>TeamRadarView</class>
+   <class>TeamRadar::TeamRadarView</class>
    <extends>QGraphicsView</extends>
-   <header>../QtCreator/src/plugins/TeamRadar/TeamRadarView.h</header>
+   <header>../TeamRadar/TeamRadarView.h</header>
   </customwidget>
  </customwidgets>
  <resources>

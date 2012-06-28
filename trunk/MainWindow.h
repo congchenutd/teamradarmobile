@@ -3,13 +3,16 @@
 
 #include <QtGui/QMainWindow>
 
-struct TeamRadarEvent;
 
 namespace Ui {
 	class MainWindow;
 }
 
 class QStandardItemModel;
+
+namespace TeamRadar {
+
+struct TeamRadarEvent;
 class MainWindow : public QMainWindow
 {
     Q_OBJECT
@@ -45,7 +48,7 @@ private slots:
 	void onPlayPause();
 	void onRewind(int row);
 	void play();
-	void play(const TeamRadarEvent &event);
+    void play(const TeamRadarEvent &event);
 
 private:
 	QIcon playIcon()  const;
@@ -69,5 +72,7 @@ private:
 	bool fullScreen;
 	bool online;
 };
+
+}
 
 #endif // MAINWINDOW_H

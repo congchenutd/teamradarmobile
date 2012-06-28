@@ -2,6 +2,8 @@
 #include "ui_PlaylistDlg.h"
 #include <QStandardItemModel>
 
+namespace TeamRadar {
+
 PlaylistDlg::PlaylistDlg(QStandardItemModel* m, QWidget *parent) :
 	QDialog(parent), model(m), ui(new Ui::PlaylistDlg)
 {
@@ -15,4 +17,6 @@ PlaylistDlg::PlaylistDlg(QStandardItemModel* m, QWidget *parent) :
 PlaylistDlg::~PlaylistDlg()
 {
     delete ui;
+}
+
 }
