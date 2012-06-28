@@ -8,8 +8,9 @@ namespace Ui {
     class SettingDlg;
 }
 
-class Setting;
+namespace TeamRadar {
 
+class Setting;
 class SettingDlg : public QDialog
 {
 	Q_OBJECT
@@ -32,7 +33,9 @@ private:
 private:
     Ui::SettingDlg *ui;
 	QColor color;
-	Setting* setting;
+    TeamRadar::Setting* setting;
 };
+
+}
 
 #endif // SETTINGDLG_H

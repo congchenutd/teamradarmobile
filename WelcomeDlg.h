@@ -7,6 +7,8 @@ namespace Ui {
 	class WelcomeDlg;
 }
 
+namespace TeamRadar {
+
 class WelcomeDlg : public QDialog
 {
     Q_OBJECT
@@ -27,5 +29,7 @@ private:
 	Ui::WelcomeDlg *ui;
 	bool online;
 };
+
+}
 
 #endif // MODEDLG_H

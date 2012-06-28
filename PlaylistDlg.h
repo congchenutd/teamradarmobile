@@ -8,6 +8,9 @@ namespace Ui {
 }
 
 class QStandardItemModel;
+
+namespace TeamRadar {
+
 class PlaylistDlg : public QDialog
 {
     Q_OBJECT
@@ -20,5 +23,7 @@ private:
     Ui::PlaylistDlg *ui;
 	QStandardItemModel* model;
 };
+
+}
 
 #endif // PLAYLISTDLG_H

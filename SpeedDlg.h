@@ -7,6 +7,8 @@ namespace Ui {
     class SpeedDlg;
 }
 
+namespace TeamRadar {
+
 class SpeedDlg : public QDialog
 {
 	Q_OBJECT
@@ -23,5 +25,7 @@ private slots:
 private:
     Ui::SpeedDlg *ui;
 };
+
+}
 
 #endif // SPEEDDLG_H

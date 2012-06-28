@@ -1,6 +1,8 @@
 #include "SpeedDlg.h"
 #include "ui_SpeedDlg.h"
 
+namespace TeamRadar {
+
 SpeedDlg::SpeedDlg(QWidget *parent) :
     QDialog(parent),
     ui(new Ui::SpeedDlg)
@@ -26,4 +28,6 @@ void SpeedDlg::setSpeed(int speed)
 {
 	ui->slider->setValue(speed);
 	onValueChanged(speed);
+}
+
 }

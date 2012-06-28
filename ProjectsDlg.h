@@ -9,6 +9,8 @@ namespace Ui {
 	class ProjectsDlg;
 }
 
+namespace TeamRadar {
+
 class ProjectsDlg : public QDialog
 {
     Q_OBJECT
@@ -23,5 +25,7 @@ private:
 	QStandardItemModel model;
 	QString project;
 };
+
+}
 
 #endif // PROJECTSDLG_H

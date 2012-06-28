@@ -3,7 +3,9 @@
 #include "PeerManager.h"
 #include "Setting.h"
 #include <QtGui/QApplication>
-//#include "Defines.h"
+#include "Defines.h"
+
+using namespace TeamRadar;
 
 int main(int argc, char *argv[])
 {
@@ -33,5 +35,5 @@ int main(int argc, char *argv[])
 	else
 		mainWindow.onOffline();
 
-    return app.exec();
+	return app.exec();
 }

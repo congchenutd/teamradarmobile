@@ -3,6 +3,8 @@
 #include <QApplication>
 #include <QDesktopWidget>
 
+namespace TeamRadar {
+
 ProjectsDlg::ProjectsDlg(const QStringList& list, QWidget *parent) :
 	QDialog(parent), ui(new Ui::ProjectsDlg)
 {
@@ -30,4 +32,6 @@ QString ProjectsDlg::getProject() const
 	if(!rows.isEmpty())
 		result = model.data(rows.front()).toString();
 	return result;
+}
+
 }
