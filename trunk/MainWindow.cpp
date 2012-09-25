@@ -201,14 +201,14 @@ void MainWindow::play(const TeamRadarEvent& event)
 		ui->view->moveDeveloperTo(event.userName, event.parameters);
         DirtyType dirtyType = (event.userName == Setting::getInstance()->getUserName()) ? LocalDirty
                                                                                         : RemoteDirty;
-        ui->view->setDirty(event.parameters, dirtyType);
+        ui->view->setDirty(event.parameters, event.userName);
     }
 	else if(event.eventType == "MODE")
 		ui->view->setDeveloperMode(event.userName, event.parameters);
     else if(event.eventType == "DISCONNECTED")
 		ui->view->removeDeveloper(event.userName);
     else if(event.eventType == "SCM_COMMIT")
-        ui->view->setDirty(event.parameters, NotDirty);
+        ui->view->setDirty(event.parameters);
 }
 
 void MainWindow::play()
