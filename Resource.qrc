@@ -13,5 +13,6 @@
         <file>Images/Help.png</file>
         <file>Images/Projects.png</file>
         <file>Images/Welcome.png</file>
+        <file>CompileDate.txt</file>
     </qresource>
 </RCC>
