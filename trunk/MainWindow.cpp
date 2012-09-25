@@ -141,7 +141,8 @@ void MainWindow::onSettings()
 void MainWindow::onAbout() {
 	QMessageBox::about(this, "About",
 			tr("<h3><b>Team Radar Mobile</b></h3>"
-			   "<p>CongChen@utdallas.edu</a></p>"));
+			   "<p>CongChen@utdallas.edu</a></p>"
+			   "<p>Built on %1</p>").arg(Setting::getInstance()->getCompileDate()));
 }
 
 QIcon MainWindow::playIcon() const {
