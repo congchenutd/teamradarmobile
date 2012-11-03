@@ -17,21 +17,21 @@ SettingDlg::SettingDlg(QWidget *parent) :
 	ui->leUserName->setText(setting->getUserName());
 	ui->leAddress ->setText(setting->getServerAddress());
 	ui->lePort    ->setText(QString::number(Setting::getInstance()->getServerPort()));
-	setColor(setting->getColor("DefaultDeveloperColor"));            // color
+    setColor(setting->getColor("DefaultDeveloperColor"));
 	onSubtlety(1.0 / setting->getThreshold());
 	onFontSize(setting->getFontSize());
 	ui->cbLightTrail->setChecked(setting->showLightTrail());
 	ui->cbAfterImage->setChecked(setting->showAfterImage());
 	showMaximized();
 
-	connect(ui->leAddress,  SIGNAL(textChanged(QString)), this, SLOT(onShowRestartHint()));
-	connect(ui->lePort,     SIGNAL(textChanged(QString)), this, SLOT(onShowRestartHint()));
-	connect(ui->leUserName, SIGNAL(textChanged(QString)), this, SLOT(onShowRestartHint()));
+    connect(ui->leAddress,  SIGNAL(textChanged(QString)), this, SLOT(showRestartHint()));
+    connect(ui->lePort,     SIGNAL(textChanged(QString)), this, SLOT(showRestartHint()));
+    connect(ui->leUserName, SIGNAL(textChanged(QString)), this, SLOT(showRestartHint()));
 	connect(ui->btColor,    SIGNAL(clicked()), this, SLOT(onSetColor()));
 	connect(ui->sliderSubtlety, SIGNAL(valueChanged(int)), this, SLOT(onSubtlety(int)));
 	connect(ui->sliderFontSize, SIGNAL(valueChanged(int)), this, SLOT(onFontSize(int)));
-	connect(Connection::getInstance(), SIGNAL(connectionStatusChanged(bool)), this, SLOT(setLight(bool)));
-	setLight(Connection::getInstance()->isReadyForUse());
+    connect(Connection::getInstance(), SIGNAL(connectionStatusChanged(bool)), this, SLOT(setConnectionLightOn(bool)));
+    setConnectionLightOn(Connection::getInstance()->isReadyForUse());
 }
 
 SettingDlg::~SettingDlg() {
@@ -44,7 +44,7 @@ void SettingDlg::accept()
 	setting->setUserName(ui->leUserName->text());
 	setting->setServerAddress(ui->leAddress->text());
 	setting->setServerPort(ui->lePort->text().toInt());
-	setting->setColor("DefaultDeveloperColor", color);
+    setting->setColor("DefaultDeveloperColor", color);
 	setting->setEngineSubtlety(ui->sliderSubtlety->value());
 	setting->setFontSize(ui->sliderFontSize->value());
 	setting->setShowLightTrail(ui->cbLightTrail->isChecked());
@@ -54,7 +54,7 @@ void SettingDlg::accept()
 	Sender::getInstance()->sendColorRegistration(color);
 
 	// register photo
-	QImage image(":/Images/Cellphone.png");
+    QImage image(":/Images/Cellphone.png");   // the photo is fixed
 	QBuffer imageBuffer;
 	imageBuffer.open(QIODevice::WriteOnly);
 	image.save(&imageBuffer, "PNG");   // convert the image to QByteArray
@@ -62,7 +62,7 @@ void SettingDlg::accept()
 	return QDialog::accept();
 }
 
-void SettingDlg::setLight(bool on) {
+void SettingDlg::setConnectionLightOn(bool on) {
 	ui->labelLight->setPixmap(on ? QPixmap(":/Images/Green.png")
 								 : QPixmap(":/Images/Red.png"));
 }
@@ -72,7 +72,7 @@ void SettingDlg::setColor(const QColor& clr)
 	if(clr.isValid())
 	{
 		color = clr;
-		QPixmap pixmap(ui->labelColor->size());
+        QPixmap pixmap(ui->labelColor->size());  // fill the label with color
 		pixmap.fill(color);
 		ui->labelColor->setPixmap(pixmap);
 	}
@@ -82,7 +82,7 @@ void SettingDlg::onSetColor() {
 	setColor(QColorDialog::getColor(color));
 }
 
-void SettingDlg::onShowRestartHint() {
+void SettingDlg::showRestartHint() {
 	ui->labelMessage->setText(tr("Restart to activate the changes"));
 }
 

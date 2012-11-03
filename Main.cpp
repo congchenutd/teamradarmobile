@@ -1,9 +1,9 @@
+#include "Defines.h"
 #include "MainWindow.h"
 #include "WelcomeDlg.h"
 #include "PeerManager.h"
 #include "Setting.h"
 #include <QtGui/QApplication>
-#include "Defines.h"
 
 using namespace TeamRadar;
 
@@ -20,9 +20,9 @@ int main(int argc, char *argv[])
 	font.setPointSize(Setting::getInstance()->getFontSize());
 	app.setFont(font);
 
-	// user clicked quit
+    // show the entrance
 	WelcomeDlg welcome;
-	if(welcome.exec() != QDialog::Accepted)
+    if(welcome.exec() != QDialog::Accepted)   // user clicked quit
 		return 1;
 
 	// main window

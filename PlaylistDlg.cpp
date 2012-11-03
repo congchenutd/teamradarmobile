@@ -4,8 +4,8 @@
 
 namespace TeamRadar {
 
-PlaylistDlg::PlaylistDlg(QStandardItemModel* m, QWidget *parent) :
-	QDialog(parent), model(m), ui(new Ui::PlaylistDlg)
+PlaylistDlg::PlaylistDlg(QStandardItemModel* m, QWidget* parent) :
+    QDialog(parent), ui(new Ui::PlaylistDlg), model(m)
 {
     ui->setupUi(this);
 	showMaximized();
@@ -14,8 +14,7 @@ PlaylistDlg::PlaylistDlg(QStandardItemModel* m, QWidget *parent) :
 	ui->tableView->horizontalHeader()->setStretchLastSection(true);
 }
 
-PlaylistDlg::~PlaylistDlg()
-{
+PlaylistDlg::~PlaylistDlg() {
     delete ui;
 }
 

@@ -21,18 +21,18 @@ public:
 	void accept();
 
 private slots:
-	void setLight(bool on);
-	void onSetColor();
-	void onShowRestartHint();
-	void onSubtlety(int value);
-	void onFontSize(int value);
+    void setConnectionLightOn(bool on);  // green or red
+    void showRestartHint();
+    void onSetColor();             // set color clicked
+    void onSubtlety(int value);    // subtlety changed
+    void onFontSize(int value);    // font size changed
 
 private:
 	void setColor(const QColor& color);
 
 private:
     Ui::SettingDlg *ui;
-	QColor color;
+    QColor color;                  // color of this user
     TeamRadar::Setting* setting;
 };
 

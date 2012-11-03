@@ -23,12 +23,13 @@ namespace TeamRadar {
 MainWindow::MainWindow(QWidget *parent)
 	: QMainWindow(parent), ui(new Ui::MainWindow)
 {
-	speed = 1;
-	playing = false;
-	currentRow = -1;
+    currentRow = -1;
+    speed      = 1;
+    playing    = false;
 	fullScreen = false;
-	online = false;
+    online     = false;
 
+    // model
 	model = new QStandardItemModel(this);
 	model->setColumnCount(4);
 	model->setHeaderData(DateTime,  Qt::Horizontal, tr("Time"));
@@ -36,20 +37,24 @@ MainWindow::MainWindow(QWidget *parent)
 	model->setHeaderData(EventType, Qt::Horizontal, tr("Event"));
 	model->setHeaderData(Parameter, Qt::Horizontal, tr("Parameters"));
 
+    // view
 	ui->setupUi(this);
+    ui->btPlayPause->setIcon(getPlayIcon());
+    ui->btPlaylist ->setIcon(style()->standardIcon(QStyle::SP_FileDialogDetailedView));
+
+    // what types gestures supported
 	grabGesture(Qt::PinchGesture);
 	grabGesture(Qt::TapGesture);
 	grabGesture(Qt::TapAndHoldGesture);
 
-	ui->btPlayPause->setIcon(playIcon());
-	ui->btPlaylist ->setIcon(style()->standardIcon(QStyle::SP_FileDialogDetailedView));
-
+    // graphics view
 	QGraphicsScene *scene = new QGraphicsScene(this);
 	scene->setItemIndexMethod(QGraphicsScene::NoIndex);
 	scene->setSceneRect(-300, -300, 600, 600);
 	ui->view->setScene(scene);
 	PeerManager::getInstance()->setView(ui->view);
 
+    // connections
 	connect(ui->actionOnline,        SIGNAL(triggered()), this, SLOT(onOnline()));
 	connect(ui->actionOffline,       SIGNAL(triggered()), this, SLOT(onOffline()));
 	connect(ui->actionSelectProject, SIGNAL(triggered()), this, SLOT(onSelectProject()));
@@ -96,6 +101,8 @@ bool MainWindow::event(QEvent* event)
 	if(event->type() == QEvent::Gesture)
 	{
 		QGestureEvent* gestureEvent = static_cast<QGestureEvent*>(event);
+
+        // tap and hold to toggle fullscreen
 		if(QGesture* gesture = gestureEvent->gesture(Qt::TapAndHoldGesture))
 		{
 			static QPointF lastPosition;
@@ -122,20 +129,20 @@ void MainWindow::onOnline()
 {
 	online = true;
 	showControls(false);
-	onSelectProject();
+    onSelectProject();   // restart
 }
 
 void MainWindow::onOffline()
 {
 	online = false;
 	showControls(true);
-	onSelectProject();
+    onSelectProject();   // restart
 }
 
 void MainWindow::onSettings()
 {
 	SettingDlg dlg(this);
-	dlg.exec();
+    dlg.exec();         // dlg will save the settings
 }
 
 void MainWindow::onAbout() {
@@ -145,11 +152,11 @@ void MainWindow::onAbout() {
 			   "<p>Built on %1</p>").arg(Setting::getInstance()->getCompileDate()));
 }
 
-QIcon MainWindow::playIcon() const {
+QIcon MainWindow::getPlayIcon() const {
 	return style()->standardIcon(QStyle::SP_MediaPlay);
 }
 
-QIcon MainWindow::pauseIcon() const {
+QIcon MainWindow::getPauseIcon() const {
 	return style()->standardIcon(QStyle::SP_MediaPause);
 }
 
@@ -174,10 +181,11 @@ void MainWindow::onProjects(const QStringList& projectList)
 		return;
 	}
 
+    // show available project and let the user select one
 	ProjectsDlg dlg(projectList, this);
 	if(dlg.exec() == QDialog::Accepted)
 	{
-		project = dlg.getProject();
+		project = dlg.getSelectedProject();
 		Setting::getInstance()->setRootPath(project);
 		Sender::getInstance()->sendJoinProject(project);
 		Sender::getInstance()->sendTeamMemberRequest();
@@ -200,8 +208,8 @@ void MainWindow::play(const TeamRadarEvent& event)
 	if(event.eventType == "SAVE")
     {
 		ui->view->moveDeveloperTo(event.userName, event.parameters);
-        DirtyType dirtyType = (event.userName == Setting::getInstance()->getUserName()) ? LocalDirty
-                                                                                        : RemoteDirty;
+//        DirtyType dirtyType = (event.userName == Setting::getInstance()->getUserName()) ? LocalDirty
+//                                                                                        : RemoteDirty;
         ui->view->setDirty(event.parameters, event.userName);
     }
 	else if(event.eventType == "MODE")
@@ -219,7 +227,7 @@ void MainWindow::play()
 
 	play(++currentRow);
 
-	// ready for the next
+    // get ready for the next event
 	int nextRow = currentRow + 1;
 	if(nextRow < model->rowCount())
 	{
@@ -229,14 +237,18 @@ void MainWindow::play()
 		QTimer::singleShot(duration * 1000 / speed, this, SLOT(play()));
 	}
 	else {
-		stop();
+        stop();   // the end
 	}
 }
 
 void MainWindow::play(int row)
 {
+    if(row < 0 || row > model->rowCount()-1)
+        return;
 	currentRow = row;
 	ui->slider->setValue(row);
+
+    // find the event and play it
 	play(TeamRadarEvent(model->data(model->index(row, UserName)) .toString(),
 						model->data(model->index(row, EventType)).toString(),
 						model->data(model->index(row, Parameter)).toString()));
@@ -253,8 +265,9 @@ void MainWindow::showControls(bool show)
 
 void MainWindow::onDownload()
 {
+    // show download dialog
 	RequestEventsDlg dlg(this);
-	if(dlg.exec() == QDialog::Accepted)
+    if(dlg.exec() == QDialog::Accepted)  // send download request
 		Sender::getInstance()->sendEventRequest(dlg.getUserList(),
 												dlg.getEventList(),
 												dlg.getStartTime(),
@@ -265,6 +278,7 @@ void MainWindow::onDownload()
 
 void MainWindow::onEventDownloaded(const TeamRadarEvent& event)
 {
+    // add the event to playlist
 	int lastRow = model->rowCount();
 	model->insertRow(lastRow);
 	model->setData(model->index(lastRow, 0), event.time.toString(Setting::dateTimeFormat));
@@ -273,25 +287,25 @@ void MainWindow::onEventDownloaded(const TeamRadarEvent& event)
 	model->setData(model->index(lastRow, 3), event.parameters);
 
 	ui->slider->setMaximum(model->rowCount() - 1);
-	model->sort(DateTime);
+    model->sort(DateTime);   // reorder by time
 }
 
 void MainWindow::onPlaylist()
 {
-	PlaylistDlg dlg(model, this);
+    PlaylistDlg dlg(model, this);   // show the playlist
 	dlg.exec();
 }
 
 void MainWindow::onPlayPause()
 {
-	if(playing)   // pause
+    if(playing)   // go pause
 	{
-		ui->btPlayPause->setIcon(playIcon());
+        ui->btPlayPause->setIcon(getPlayIcon());
 		playing = false;
 	}
-	else          // start
+    else          // go play
 	{
-		ui->btPlayPause->setIcon(pauseIcon());
+        ui->btPlayPause->setIcon(getPauseIcon());
 		playing = true;
 		play();
 		showFullScreen();
@@ -299,7 +313,7 @@ void MainWindow::onPlayPause()
 }
 
 void MainWindow::onRewind(int row) {
-	currentRow = row;
+    currentRow = row;    // go to row
 }
 
 void MainWindow::showFullScreen()
@@ -320,7 +334,7 @@ void MainWindow::stop()
 {
 	currentRow = -1;
 	playing = false;
-	ui->btPlayPause->setIcon(playIcon());
+    ui->btPlayPause->setIcon(getPlayIcon());
 	ui->slider->setValue(0);
 	showMaximized();
 }

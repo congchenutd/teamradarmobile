@@ -20,7 +20,7 @@ WelcomeDlg::WelcomeDlg(QWidget *parent) :
 	connect(Connection::getInstance(), SIGNAL(connectionStatusChanged(bool)), this, SLOT(onConnected(bool)));
 
 	onConnected(false);
-	onConnect();
+    onConnect();   // try connecting
 }
 
 WelcomeDlg::~WelcomeDlg() {
@@ -42,12 +42,12 @@ void WelcomeDlg::onOffline()
 void WelcomeDlg::onSetting()
 {
 	SettingDlg dlg(this);
-	dlg.exec();
+    dlg.exec();   // dlg will save all the settings
 }
 
 void WelcomeDlg::onConnected(bool success)
 {
-	ui->btOnline ->setShown(success);
+    ui->btOnline ->setShown(success);    // update buttons
 	ui->btOffline->setShown(success);
 	ui->btConnect->setShown(!success);
 }
