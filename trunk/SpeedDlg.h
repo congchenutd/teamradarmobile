@@ -9,6 +9,8 @@ namespace Ui {
 
 namespace TeamRadar {
 
+// UI for setting playback speed
+// with a slider and a label
 class SpeedDlg : public QDialog
 {
 	Q_OBJECT

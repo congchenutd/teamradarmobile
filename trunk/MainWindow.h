@@ -25,15 +25,16 @@ public:
 
     explicit MainWindow(QWidget *parent = 0);
 	~MainWindow();
-	void setOrientation(ScreenOrientation orientation);
+    void setOrientation(ScreenOrientation orientation);  // handle orientation change
 	virtual void showFullScreen();
 	virtual void showMaximized();
 
 protected:
-	bool event(QEvent* event);
+    bool event(QEvent* event);    // handle multi-touch events
 
+    // user interactions
 public slots:
-	void onOnline();
+    void onOnline();
 	void onOffline();
 	void onEventDownloaded(const TeamRadarEvent &event);
 
@@ -47,30 +48,30 @@ private slots:
 	void onPlaylist();
 	void onPlayPause();
 	void onRewind(int row);
-	void play();
-    void play(const TeamRadarEvent &event);
+    void play();                             // start playing
+    void play(const TeamRadarEvent& event);  // play a single event
 
 private:
-	QIcon playIcon()  const;
-	QIcon pauseIcon() const;
+    QIcon getPlayIcon()  const;
+    QIcon getPauseIcon() const;
 	void toggleFullScreen();
-	void play(int row);
+    void play(int row);              // play a row
 	void stop();
 	void showControls(bool show);
 
 public:
-	enum {DateTime, UserName, EventType, Parameter};
+    enum {DateTime, UserName, EventType, Parameter};   // sections of an event
 
 private:
     Ui::MainWindow *ui;
 
-	QStandardItemModel* model;
-	QString project;
-	int speed;
-	bool playing;
-	int currentRow;
-	bool fullScreen;
-	bool online;
+    QStandardItemModel* model;  // for events
+    QString project;            // project name
+    int  currentRow;            // the row currently playing
+    int  speed;                 // playing speed, 1~10
+    bool playing;               // is playing?
+    bool fullScreen;            // is fullscreen?
+    bool online;                // online mode?
 };
 
 }

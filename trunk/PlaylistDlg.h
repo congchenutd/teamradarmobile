@@ -11,12 +11,14 @@ class QStandardItemModel;
 
 namespace TeamRadar {
 
+// a dialog showing all the downloaded events
 class PlaylistDlg : public QDialog
 {
     Q_OBJECT
 
 public:
-	explicit PlaylistDlg(QStandardItemModel* m, QWidget *parent = 0);
+    // m is the model holding the events
+    explicit PlaylistDlg(QStandardItemModel* m, QWidget* parent = 0);
     ~PlaylistDlg();
 
 private:
